@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html>
+  <meta charset="UTF-8">
+    <title>3 en raya</title>
+    <style type="text/css">
+      #content_table td {
+        border: 1px solid;
+        padding: 0;
+        width: 100px;
+        height: 100px;
+        font-size: 70px;
+        font-weight: bolder;
+        font-family: sans-serif;
+        text-shadow: 0 0 2px rgb(255, 255, 255), 0 0 0px rgb(255, 255, 255), 0 0 3px rgb(40, 43, 48), 0 0 3px rgb(40, 43, 48);
+        color: rgb(40, 43, 48);
+      }
+      #content_table {
+        display: inline-table;
+      }
+      .content-controls {
+          text-align: center;
+          width: 100%;
+          font-size: 20px;
+          letter-spacing: 1px;
+      }
+      .content-controls input[type="button"] {
+          padding: 10px;
+          border-radius: 5px;
+      }
+      h1 {
+          text-transform: uppercase;
+          font-size: 40px;
+          font-family: fantasy;
+          color: rgb(40, 43, 48);
+      }
+      body {
+          background: rgb(216, 188, 133);  color: rgb(68, 64, 64);  text-align: center;
+      }
+    </style>
+    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+    <script>
+      $(document).on('ready',function (){
+        var turno=1;
+        var jug1=0;//acumula los puntos del jugador 1
+        var jug2=0;//acumula los puntos del jugador 2
+
+        var arreglo = new Array();
+        for (i = 0; i < 3; i++){
+          arreglo[i]=new Array(3);
+        }
+        //limpiar
+        function limpiar(){
+          $('#content_table td').text('');
+          for (i = 0; i < 3; i++){
+            for (j = 0; j < 3; j++){
+              arreglo[i][j] = -1;
+            } 
+          }
+        }
+        //reiniciar
+        function reiniciar(){
+          jug1=0;
+          jug2=0;
+          $('#ptsjug1').text(jug1);
+          $('#ptsjug2').text(jug2);
+        }
+        $('#limpiar').on('click',function(){
+          limpiar();
+        });
+        $('#reiniciar').on('click',function(){
+          limpiar();
+          reiniciar();
+        });
+
+        $('#content_table tr > td').on('click',function(){
+          var row = $(this).parent('tr').data('row');
+          var column = $(this).data('column');
+            if(turno==1 && $(this).text() == ""){
+              $(this).text('X');
+              arreglo[row][column] = '1';
+              turno=2;
+            }
+            else if(turno==2 && $(this).text() == ""){ 
+              $(this).text('O');
+              arreglo[row][column]=0;
+              turno=1;
+            }
+            else{
+              alert('ya ingresastes');
+            }
+            checkRow();
+            checkColumn();
+            checkDiagonal();              
+        });
+        function checkRow(){
+          for (var i = 0; i < 3; i++) {
+            if(arreglo[0][0]==1 && arreglo[i][1]==1 && arreglo[i][2]==1){
+              alert('gano X');
+              jug1=jug1+1;
+              $('#ptsjug1').text(jug1);
+              limpiar();
+            }
+            if(arreglo[i][0]==0 && arreglo[i][1]==0 && arreglo[i][2]==0){
+              alert('gano O');
+              jug2=jug2+1;
+              $('#ptsjug2').text(jug2);
+              limpiar();
+            }
+          }
+        }
+        function checkColumn(){
+          for (var i = 0; i < 3; i++) {
+            if(arreglo[0][i]==1 && arreglo[1][i]==1 && arreglo[2][i]==1){
+              alert('gano X');
+              jug1=jug1+1;
+              $('#ptsjug1').text(jug1);
+              limpiar();
+            }
+            if(arreglo[0][i]==1 && arreglo[1][i]==1 && arreglo[2][i]==1){
+              alert('gano O');
+              jug2=jug2+1;
+              $('#ptsjug2').text(jug2);
+              limpiar();
+            }
+          }
+        }
+        function checkDiagonal(){
+          for (var i = 0; i < 1; i++) {
+            if(arreglo[0][i]== 1 && arreglo[1][i+1]== 1 && arreglo[2][i+2]== 1 || arreglo[0][i+2]== 1 && arreglo[1][i+1]== 1 && arreglo[2][i]== 1){
+              alert('gano X');
+              jug1=jug1+1;
+              $('#ptsjug1').text(jug1);
+              limpiar();
+            }
+            if(arreglo[0][i]== 0 && arreglo[1][i+1]== 0 && arreglo[2][i+2]== 0 || arreglo[0][i+2]== 0 && arreglo[1][i+1]== 0 && arreglo[2][i]== 0){
+              alert('gano O');
+              jug2=jug2+1;
+              $('#ptsjug2').text(jug2);
+              limpiar();
+            }
+          }
+        }
+      });
+    </script>
+  </head>
+  <body>
+  <header><h1>Juego de 3 en raya!</h1></header>
+    <table id="content_table">
+     <tbody><tr data-row="0">
+        <td data-column="0"></td>  
+        <td data-column="1"></td>  
+        <td data-column="2">O</td>  
+     </tr>
+     <tr data-row="1">
+        <td data-column="0"></td>  
+        <td data-column="1">X</td>  
+        <td data-column="2">O</td>  
+     </tr>
+     <tr data-row="2">
+        <td data-column="0"></td>  
+        <td data-column="1"></td>  
+        <td data-column="2">X</td>  
+     </tr>
+    </tbody></table>
+    <section class="content-controls"><input type="button" id="limpiar" value="Limpiar">
+    <span>Jugador1 - </span><code id="ptsjug1">0</code> 
+    <span>Jugador2 - </span><code id="ptsjug2">0</code>  
+    <input type="button" id="reiniciar" value="Reiniciar">
+  </section>
+
+</body></html>
